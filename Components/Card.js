@@ -1,6 +1,7 @@
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import Colors from '../Constants/Colors'
+import { heightToDp, widthToDp } from '../LetMeAdjust'
 
 const Card = (props) => {
     return (
@@ -14,9 +15,11 @@ export default Card
 
 const styles = StyleSheet.create({
     background:{
-        width:"90%",
-        height:"50%",
+        width:widthToDp('85'),
+        height:heightToDp('54'),
         backgroundColor:Colors.cardBackground,
-        borderRadius:20
+        borderRadius:20,
+        overflow:"hidden",
+        alignItems:"center"
     }
 })

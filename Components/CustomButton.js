@@ -1,5 +1,6 @@
 import React from 'react'
 import { StyleSheet, TouchableOpacity, View, Text } from 'react-native'
+import { heightToDp, widthToDp } from '../LetMeAdjust'
 
 const CustomButton = (props) => {
     return (
@@ -15,15 +16,15 @@ export default CustomButton
 
 const styles = StyleSheet.create({
     buttonBackground:{
-        width:130,
-        height:30,
+        width:widthToDp('31'),
+        height:heightToDp('5'),
         backgroundColor:"#184D47",
-        borderRadius:10,
-        padding:5,
+        borderRadius:widthToDp('2'),
+        paddingTop:heightToDp('1'),
         elevation:4
     },
     buttonTitle:{
-        fontSize:15,
+        fontSize:widthToDp('4'),
         textAlign:"center",
         fontWeight:"bold",
         color:"white"

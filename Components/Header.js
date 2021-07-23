@@ -3,6 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import Colors from '../Constants/Colors'
 
 import defaultStyles from '../Constants/defaultStyles'
+import { heightToDp, widthToDp } from '../LetMeAdjust'
 
 const Header = (props) => {
     return (
@@ -17,8 +18,8 @@ export default Header
 const styles = StyleSheet.create({
     background:{
         width:"100%",
-        height:70,
+        height:heightToDp('10'),
         backgroundColor:Colors.headerBackground,
         justifyContent:"center"
-    }
+    },
 })

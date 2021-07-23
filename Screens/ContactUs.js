@@ -1,163 +1,207 @@
+// React & Expo Dependencies
 import { StatusBar } from 'expo-status-bar'
-import React, { useState } from 'react'
-import { SafeAreaView, StyleSheet, Text, View, Image, TextInput, TouchableWithoutFeedback, Keyboard, TouchableOpacity, ScrollView} from 'react-native'
+import React from 'react'
+import {    StyleSheet, 
+            Text, 
+            View, 
+            Image, 
+            TextInput, 
+            TouchableWithoutFeedback, 
+            Keyboard,  
+            ScrollView, 
+} from 'react-native'
 
+import { setFirstName, setLastName, setNumber, setMail, setIssue } from '../Store/actions';
+
+import {useSelector, useDispatch} from 'react-redux';
+
+// Custom Components
 import Colors from '../Constants/Colors';
 import Card from '../Components/Card';
 import CustomButton from '../Components/CustomButton';
 
+
+import { widthToDp, heightToDp } from '../LetMeAdjust';
+
+
+// SMS & Mail 
 import * as SMS from 'expo-sms';
 
 import { sendEmail } from '../Function/send-email';
-import Header from '../Components/Header';
-import defaultStyles from '../Constants/defaultStyles';
+
 
 const ContactUs = (props) => {
 
-    const [ fname, setFname ] = useState("");
-    const [ lname, setLname ] = useState("");
-    const [ email, setEmail ] = useState("");
-    const [ mobileNum, setMobileNum ] = useState("");
-    var [ report, setReport ] = useState("");
+    const fname = useSelector((state) => state.fname);
+    const lname = useSelector((state) => state.lname);
+    const number = useSelector((state) => state.number);
+    const mail = useSelector((state) => state.mail);
+    const issue = useSelector((state) => state.issue);
+
+    const dispatch = useDispatch();
 
     const mailHandler = () =>{
-        report = fname + lname + '\n' + email + '\n' + mobileNum + '\n\n Report Statement -: ' + report;
+        var report = fname + lname + '\n' + mail + '\n' + number + '\n\n Report Statement -: ' + issue;
         sendEmail(
           'info@redpositive.in',
           'Regarding Application Issue Report',
-          report
+        report
       ).then(() => {
           console.log('Sent Successfully!');
       });
+        dispatch(setFirstName(''));
+        dispatch(setLastName(''));
+        dispatch(setNumber(''));
+        dispatch(setMail(''));
+        dispatch(setIssue(''));
     }
       
     const smsHandler = async() =>{
-        report = fname + lname + '\n' + email + '\n' + mobileNum + '\n\n Report Statement -: ' + report;
+        var report = fname + lname + '\n' + mail + '\n' + number + '\n\n Report Statement -: ' + issue;
         await SMS.sendSMSAsync(
             ['8005563581'],
           report
         );
-    }
-
-    const clearFieldHandler = () => {
-        setFname("");
-        setLname("");
-        setEmail("");
-        setMobileNum("");
-        setReport("");
+        dispatch(setFirstName(''));
+        dispatch(setLastName(''));
+        dispatch(setNumber(''));
+        dispatch(setMail(''));
+        dispatch(setIssue(''));
     }
 
     return (
-       
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        
-            <SafeAreaView style={styles.container}>
 
-                <StatusBar style="light" />
-                <Header title="Contact Us"/>
+        <View style={styles.container}>
 
-                <Image source={require('../assets/Contactus.png')} style={styles.image}/>
+            <StatusBar style="light" backgroundColor={Colors.headerBackground}/>
 
-                <Card style={styles.infoContainer}>
-                    
-                    <Text style={defaultStyles.title}> Report An Issue </Text>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 
-                    <View style={{padding:10, flexDirection:"row", justifyContent:"space-around"}}>
-                        <TextInput style={styles.nameInput}
-                            placeholder="First Name"
-                            placeholderTextColor="#3B5249"
-                            value={fname}
-                            onChangeText={(text)=>setFname(text)}
-                        />
-                        <TextInput style={styles.nameInput}
-                            placeholder="Last Name"
-                            placeholderTextColor="#3B5249"
-                            value={lname}
-                            onChangeText={(text)=>setLname(text)}
-                        />
-                    </View>
+                <ScrollView contentContainerStyle={{alignItems:"center"}}>
 
-                    <TextInput style={styles.input}
-                            placeholder="email@address.com"
-                            placeholderTextColor="#3B5249"
-                            value={email}
-                            onChangeText={(text)=>setEmail(text)}
-                    />
+                    <Image source={require('../assets/Contactus.png')} style={styles.img}/>
 
-                    <TextInput style={styles.input}
-                            placeholder="Mobile Number"
-                            placeholderTextColor="#3B5249"
-                            value={mobileNum}
-                            onChangeText={(text)=>setMobileNum(text)}
-                    />
+                    <Card style={styles.infoContainer}>
 
-                    <TextInput style={styles.inputBox}
-                            placeholder="Share your issue here"
-                            placeholderTextColor="#3B5249"
-                            textAlign="left"
-                            value={report}
-                            onChangeText={(text)=>setReport(text)}
-                    />
-                    
-                </Card>
+                        <Text style={{fontSize:widthToDp("4"), color:Colors.textColor}}> Report an Issue </Text>
 
-                <View style={{flexDirection:"row", width:"75%", justifyContent:"space-between"}}>
-                    <CustomButton onPress={mailHandler}>
-                        Send us a Email!    
-                    </CustomButton>
-                    <CustomButton onPress={smsHandler}>
-                        Send us SMS
-                    </CustomButton>
-                </View>
+                        
+                            <View style={styles.nameContainer}>
+                                <TextInput 
+                                    style={styles.nameInput}
+                                    placeholder="First Name"
+                                    value={fname}
+                                    onChangeText={(text) => {dispatch(setFirstName(text))}}
+                                />
+                                <TextInput 
+                                    style={styles.nameInput}
+                                    placeholder="Last Name"
+                                    value={lname}
+                                    onChangeText={(text) => {dispatch(setLastName(text))}}    
+                                />
+                            </View>
+                            <TextInput 
+                                style={styles.contactInput}
+                                placeholder="Contact number"
+                                keyboardType="number-pad"
+                                maxLength={10}
+                                value={number}
+                                onChangeText={(text) => {dispatch(setNumber(text.replace(/[^0-9]/g, '')))}} 
+                            />
+                            <TextInput 
+                                style={styles.contactInput}
+                                placeholder="Mail id"
+                                keyboardType="email-address"
+                                value={mail}
+                                onChangeText={(text) => {dispatch(setMail(text))}} 
+                            />
+                            <TextInput
+                                style={styles.issueBox}
+                                placeholder="Type your issue here"
+                                value={issue}
+                                onChangeText={(text) => {dispatch(setIssue(text))}}
+                            />
 
-                <TouchableOpacity onPress={clearFieldHandler}>
-                    <Text style={{marginTop:15, color:"grey", textAlign:"center"}}> Clear fields </Text>
-                </TouchableOpacity>
+                            <View style={styles.buttonContainer}> 
 
-            </SafeAreaView>
+                                <CustomButton onPress={mailHandler}>
+                                    Send us mail !
+                                </CustomButton>
 
-        </TouchableWithoutFeedback>
+                                <CustomButton onPress={smsHandler}>
+                                    Send us SMS !
+                                </CustomButton>
+
+                            </View>
+                        
+                    </Card>
+
+                </ScrollView>
+
+            </TouchableWithoutFeedback>
+
+        </View>
 
     )
 }
 
 export default ContactUs
 
+
+// Styling's
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,       
-        backgroundColor:Colors.screenBackground,
+    container:{
+        flex:1,
         alignItems:"center",
+        paddingVertical:heightToDp('2'),
+        paddingHorizontal:widthToDp('2')
     },
-    infoContainer:{
-        margin:20,
-        overflow:"hidden",
-        alignItems:"center",
-        padding:5
+    img:{
+        height:heightToDp('30'),
+        width:widthToDp('58')
+    },infoContainer:{
+        paddingVertical:heightToDp('2'),
+        paddingHorizontal:widthToDp('5'),
     },
-    image:{
-        width:"60%",
-        height:"20%",
-        marginTop:20
+    nameContainer:{
+        width:"100%",
+        flexDirection:"row",
+        marginHorizontal:widthToDp('2'),
+        marginVertical:heightToDp('4'),
+        height:heightToDp('2')
     },
     nameInput:{
-        height:40,
-        width:150,
+        width:widthToDp('31.5'),
         borderBottomWidth:1,
-        margin:10
+        marginHorizontal:widthToDp('3'),
+        height:heightToDp('5'),
+        fontSize:widthToDp('3.6'),
+        color:Colors.textColor
     },
-    input:{
-        height:40,
-        width:"90%",
+    contactInput:{
+        width:widthToDp('69'),
         borderBottomWidth:1,
-        margin:10
+        marginHorizontal:widthToDp('4'),
+        height:heightToDp('5'),
+        marginVertical:heightToDp('2'),
+        fontSize:widthToDp('3.6'),
+        color:Colors.textColor
     },
-    inputBox:{
-        padding:20,
-        height:"30%",
-        width:"90%",
+    issueBox:{
+        width:widthToDp('69'),
         borderWidth:1,
-        margin:10,
-        borderRadius:15,
+        marginHorizontal:widthToDp('4'),
+        height:heightToDp('9'),
+        marginVertical:heightToDp('2'),
+        fontSize:widthToDp('3.6'),
+        color:Colors.textColor,
+        paddingHorizontal:widthToDp('3'),
+        borderRadius:widthToDp('4')
+    },
+    buttonContainer:{
+        flexDirection:"row",
+        width:"90%",
+        justifyContent:"space-between",
+        marginVertical:heightToDp('1')
     }
 })

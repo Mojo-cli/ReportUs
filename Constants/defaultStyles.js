@@ -1,13 +1,14 @@
 import { StyleSheet } from "react-native";
+import { heightToDp, widthToDp } from "../LetMeAdjust";
 import Colors from "./Colors";
 
 export default StyleSheet.create({
     headerTitle:{
-        fontSize:22,
+        fontSize:widthToDp('5'),
         textAlign:'left',
         color:"white",
-        paddingTop:10,
-        paddingLeft:10
+        paddingTop:heightToDp("2"),
+        paddingLeft:widthToDp('2')
     },
     title:{
         fontSize:18,
